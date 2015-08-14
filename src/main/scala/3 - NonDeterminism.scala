@@ -95,6 +95,20 @@ object NonDeterminism2 {
     }
   }
 
+  def getLoanOld(name: String): List[Money] = {
+    val arr = List.newBuilder[Money]
+
+    for (account <- Api.getAccount(name)) {
+      for (balance <- Api.getBalance(account)) {
+        for (loan <- Api.qualifiedAmount(balance)) {
+          arr += loan
+        }
+      }
+    }
+
+    arr.result()
+  }
+
   def getLoan(name: String): List[Money] =
     Api.getAccount(name)
       .flatMap1(Api.getBalance)

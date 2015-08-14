@@ -8,19 +8,20 @@ object TheInfamousIOMonad1 {
   }
 
   object IO {
-    def liftIO[A](f: => A): IO[A] = IO { w => (w, f) }
+    def liftIO[A](f:() => A): IO[A] = IO { w => (w, f()) }
 
     implicit val ioMonad: Monad[IO] = new Monad[IO] {
       override def pure[A](value: A): IO[A] = IO(w => (w, value))
       override def flatMap[A, B](ma: IO[A])(f: (A) => IO[B]): IO[B] = IO { w0 =>
         val (w1, a) = ma.run(w0)
-        f(a).run(w1)
+        val (w2, b) = f(a).run(w1)
+        (w2, b)
       }
     }
   }
 
-  def putStrLn(s: String): IO[Unit] = IO.liftIO(println(s))
-  def readLn: IO[String] = IO.liftIO(scala.io.StdIn.readLine())
+  def putStrLn(s: String): IO[Unit] = IO.liftIO(() => println(s))
+  def readLn: IO[String] = IO.liftIO(() => scala.io.StdIn.readLine())
 
   def run1(): IO[Unit] = IO { w0 =>
     val (w1, _) = putStrLn("What's your name?").run(w0)
@@ -38,7 +39,7 @@ object TheInfamousIOMonad1 {
   def run(): Unit = {
     val r1 = run1()
     val r2 = run2()
-    val list = List(run1(), putStrLn("And now, run2"), run2(), putStrLn("Goodbye."))
+    val list = List(r1, putStrLn("And now, run2"), r2, putStrLn("Goodbye."))
     val program = Monad[IO].sequence(list)
 
     println("Nothing has been printed yet!")

@@ -59,7 +59,7 @@ object Logging2 {
   case class Log[A](value: A, output: Vector[String]) {
     def flatMap[B](f: A => Log[B]): Log[B] = {
       val result = f(this.value)
-      result.copy(output = this.output ++ result.output)
+      Log(result.value, this.output ++ result.output)
     }
 
     def map[B](f: A => B): Log[B] =

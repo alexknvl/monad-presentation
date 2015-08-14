@@ -216,7 +216,8 @@ object MaybeAKAOption3 {
   def getLoan2(name: String): Maybe[Money] =
     Api.getAccount(name)
       .bind(x => Api.getBalance(x)
-        .bind(Api.qualifiedAmount))
+        .bind(Api.qualifiedAmount)
+      )
 
   def getLoan3(name: String): Maybe[Money] =
     Api.getAccount(name)

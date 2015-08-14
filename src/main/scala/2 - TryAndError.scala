@@ -20,7 +20,7 @@ object TryAndError1 {
     }
 
     def getBalance(account: Account): Result[Money] = {
-      account match {
+      account.id match {
         case 1 => Okay(1000)
         case 2 => Okay(100)
         case _ => Error(s"No balance associated with account ${account.id}.")
@@ -67,6 +67,11 @@ object TryAndError2 {
       case Okay(x) => f(x)
       case Error(e) => Error(e)
     }
+
+    def map[B](f: A => B): Result[B] = this match {
+      case Okay(x) => Okay(f(x))
+      case Error(e) => Error(e)
+    }
   }
   final case class Okay[A](value: A) extends Result[A]
   final case class Error(message: String) extends Result[Nothing]
@@ -86,7 +91,7 @@ object TryAndError2 {
     }
 
     def getBalance(account: Account): Result[Money] = {
-      account match {
+      account.id match {
         case 1 => Okay(1000)
         case 2 => Okay(100)
         case _ => Error(s"No balance associated with account ${account.id}.")
@@ -130,6 +135,11 @@ object TryAndError3 {
       case Okay(x) => f(x)
       case Error(e) => Error(e)
     }
+
+    def map[B](f: A => B): Result[B] = this match {
+      case Okay(x) => Okay(f(x))
+      case Error(e) => Error(e)
+    }
   }
   final case class Okay[A](value: A) extends Result[A]
   final case class Error(message: String) extends Result[Nothing]
@@ -149,7 +159,7 @@ object TryAndError3 {
     }
 
     def getBalance(account: Account): Result[Money] = {
-      account match {
+      account.id match {
         case 1 => Okay(1000)
         case 2 => Okay(100)
         case _ => Error(s"No balance associated with account ${account.id}.")
@@ -205,7 +215,7 @@ object TryAndError4 {
     }
 
     def getBalance(account: Account): Result[Money] = {
-      account match {
+      account.id match {
         case 1 => Right(1000)
         case 2 => Right(100)
         case _ => Left(s"No balance associated with account ${account.id}.")
@@ -261,7 +271,7 @@ object TryAndError5 {
     }
 
     def getBalance(account: Account): Try[Money] = {
-      account match {
+      account.id match {
         case 1 => Success(1000)
         case 2 => Success(100)
         case _ => Failure(new ApiException(s"No balance associated with account ${account.id}."))

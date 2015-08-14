@@ -10,6 +10,8 @@ object TypeClasses1 {
     def pure[A](value: A): M[A]
   }
 
+  val m = Monad[Maybe]
+
   object Monad {
     def apply[M[_]](implicit m: Monad[M]): Monad[M] = m
 
@@ -21,7 +23,7 @@ object TypeClasses1 {
     }
   }
 
-  sealed trait Maybe[+A] extends Serializable with Product
+  sealed trait Maybe[+A]
   final case class Just[+A](value: A) extends Maybe[A]
   case object Nothing extends Maybe[Nothing]
 
@@ -116,13 +118,13 @@ object TypeClasses2 {
   }
 
   def run(): Unit = {
-    val M = Monad[Option[?]]
+    val M = Monad[Option]
 
     println(M.sequence(List(Some(1), Some(2), None)))
     println(M.sequence(List(Some(1), Some(2), Some(3))))
 
     println(M.map2(Some(1), Some(2))(_ + _))
-    println(M.map2(Some(1), Option.empty[Int])(_ + _))
+    println(M.map2(Some(1), None: Option[Int])(_ + _))
   }
 
   def main(args: Array[String]): Unit = {
